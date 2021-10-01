@@ -1,0 +1,15 @@
+{
+	"require": {
+		"php": ">= 5.6"
+	},
+	"autoload": {
+		"psr-4": {
+			"WpBatcher\\": "src/"
+		}
+	},
+	"require-dev": {
+		"johnpbloch/wordpress-core": "^5.8",
+		"phpunit/phpunit": "^9",
+		"symfony/var-dumper": "^5.3"
+	}
+}

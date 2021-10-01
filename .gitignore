@@ -1,0 +1,8 @@
+.idea
+vendor
+
+composer.lock
+
+/custom
+
+/bin/phpunit

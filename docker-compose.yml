@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+
+  wordpress:
+    image: wordpress
+    restart: always
+    ports:
+      - "8080:80"
+    volumes:
+      - "./:/var/www/html/wp-content/mu-plugins/wp-collections/"
+      - "./mu-loader.php:/var/www/html/wp-content/mu-plugins/mu-loader.php"
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_NAME: exampledb
+      WORDPRESS_DB_USER: exampleuser
+      WORDPRESS_DB_PASSWORD: examplepass
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+
+      MYSQL_DATABASE: exampledb
+      MYSQL_USER: exampleuser
+      MYSQL_PASSWORD: examplepass
+    volumes:
+      - db:/var/lib/mysql
+
+volumes:
+  db:
