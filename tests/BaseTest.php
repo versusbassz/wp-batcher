@@ -56,4 +56,24 @@ class BaseTest extends TestCase {
 			[2, 5, [1, 1, 1, 1, 1]],
 		];
 	}
+
+	public function testDump() {
+		$iterator = (new CallbackBatcher())
+			->set_fetcher( 'WpBatcher\\Tests\\paged_range' )
+			->set_items_per_page( 3 )
+			->set_limit( 10 );
+
+		$expected = [
+			'chunk' => [],
+			'chunk_position' => 0,
+			'total_position' => 0,
+			'first_iteration_executed' => false,
+			'paged' => 0,
+			'items_per_page' => 3,
+			'limit' => 10,
+			'changes_locked' => false,
+		];
+
+		$this->assertSame( $expected, $iterator->dump() );
+	}
 }

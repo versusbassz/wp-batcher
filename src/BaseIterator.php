@@ -51,6 +51,14 @@ abstract class BaseIterator implements Iterator {
 	 */
 	protected $changes_locked = false;
 
+	/**
+	 * Dumps the internal state of the object (for debugging/dev purposes)
+	 *
+	 * We don't use foreach here, because it uses same methods of "Iterator" interface and outputs chunks content
+	 * instead of the own internal properties of the object
+	 *
+	 * @return array
+	 */
 	public function dump() {
 		return [
 			'chunk' => $this->chunk,
