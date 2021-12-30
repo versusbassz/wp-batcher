@@ -25,6 +25,12 @@ $items = ( new CallbackBatcher() )
 			'posts_per_page' => $posts_per_page,
 			'paged' => $paged,
 		] );
+
+		// or like this (the current callbackIterator implementation)
+//		return (new WP_Query( [
+//			'posts_per_page' => $posts_per_page,
+//			'paged' => $paged,
+//		] ))->posts;
 	} )
 	->set_posts_per_page( 100 )
 	->enable_wp_loop();

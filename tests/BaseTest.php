@@ -21,7 +21,7 @@ class BaseTest extends TestCase {
 
 		$this->assertSame( range( 1, 10 ), $actual );
 		$this->assertSame( 11, $iterator->key() );
-		$this->assertSame( 11, $iterator->current() ); // TODO ???
+		$this->assertSame( 11, $iterator->current() ); // TODO null ???
 		$this->assertFalse( $iterator->valid() );
 	}
 

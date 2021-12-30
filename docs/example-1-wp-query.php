@@ -17,7 +17,7 @@ while ( $items->have_posts() ) {
 }
 
 // Interface
-// Parameters: nopaging, paged are rewritten internally
+// Parameters: the props "nopaging & paged" are rewritten internally
 // to nopaging=false and current page
 
 $items = (new WpQueryBatcher( [

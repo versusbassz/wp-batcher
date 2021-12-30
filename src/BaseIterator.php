@@ -140,7 +140,7 @@ abstract class BaseIterator implements Iterator {
 	 */
 	public function rewind() {
 		if ( $this->changes_locked ) {
-			throw new Exception( 'It can be used only as generator, no rewind functionality' );
+			throw new Exception( 'Changes were locked before. Note: this object can be used only as a generator, no rewind functionality after 1st foreach iteration' );
 		}
 
 		$this->changes_locked = true;
