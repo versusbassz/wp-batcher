@@ -7,41 +7,58 @@ use Iterator;
 
 abstract class BaseIterator implements Iterator {
 	/**
+	 * The callback (callable) for fetching chunks of items
+	 *
 	 * @var callable
 	 */
 	protected $fetcher;
 
 	/**
+	 * The current chunk of items we iterate over
+	 * "chunk" is a part of "global list"
+	 *
 	 * @var Iterator
 	 */
 	protected $chunk = [];
 
 	/**
+	 * The position in the current chunk of items we iterate over
+	 *
 	 * @var int
 	 */
 	protected $chunk_position = 0;
 
 	/**
+	 * The position in the global list of items we iterate over
+	 *
 	 * @var int
 	 */
 	protected $total_position = 0;
 
 	/**
+	 * Was iterating over the object started
+	 *
 	 * @var bool
 	 */
 	protected $first_iteration_executed = false;
 
 	/**
+	 * The current number of a chunk we fetch
+	 *
 	 * @var int
 	 */
 	protected $paged = 0;
 
 	/**
+	 * Length of each chunk (except the last one, probably)
+	 *
 	 * @var int
 	 */
 	protected $items_per_page = 100;
 
 	/**
+	 * The optional hard restriction of the total possible quantity of items in the "global list".
+	 *
 	 * @var int
 	 */
 	protected $limit = 0;
