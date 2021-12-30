@@ -1,5 +1,9 @@
 # WP-Batcher
 
+If you need to do a bulk change over many items in WordPress 
+(with possible Out-of-Memory result) 
+this library tries to help you to write less code and avoid OOM.
+
 See `Makefile` for details.
 
 ## Compatibility
