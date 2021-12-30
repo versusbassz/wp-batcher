@@ -85,7 +85,7 @@ abstract class BaseIterator implements Iterator {
 	 * @throws Exception
 	 */
 	public function next() {
-		if ( $this->limit_exceed() ) {
+		if ( $this->limit_exceeded() ) {
 			return;
 		}
 
@@ -110,7 +110,7 @@ abstract class BaseIterator implements Iterator {
 	}
 
 	public function valid() {
-		if ( $this->limit_exceed() ) {
+		if ( $this->limit_exceeded() ) {
 			return false;
 		}
 
@@ -176,7 +176,7 @@ abstract class BaseIterator implements Iterator {
 	/**
 	 * @return bool
 	 */
-	protected function limit_exceed() {
+	protected function limit_exceeded() {
 		return $this->has_limit() && $this->total_position > $this->limit;
 	}
 }
