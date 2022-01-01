@@ -1,9 +1,11 @@
 <?php
 
+// time php ./tests/perf/perf-1.php custom|regular
+
 use WpBatcher\CallbackBatcher;
 
-require dirname( __DIR__ ) . '/vendor/autoload.php';
-require dirname( __DIR__ ) . '/tests/helpers.php';
+require dirname( __DIR__, 2 ) . '/vendor/autoload.php';
+require dirname( __DIR__, 2 ) . '/tests/helpers.php';
 
 if ( ! in_array( $argv[1], ['custom', 'regular'] ) ) {
 	exit( 'Incorrect type' );
@@ -33,6 +35,8 @@ foreach ( $iterable as $item ) {
 	++$count;
 }
 
+$last_item = $item;
+
 $countdown_end = microtime( true );
 
 
@@ -44,7 +48,9 @@ dump( "PHP_INT_MIN: {$min_int}" );
 dump( "PHP_INT_MAX: {$max_int}" );
 
 dump( 'Last item =====' );
-dump( $item );
+dump( $last_item );
+dump( 'Count =====' );
+dump( $count );
 dump( 'Memory =====' );
 dump( memory_get_peak_usage() );
 dump( ( round( memory_get_peak_usage() / 1000000, 2 ) ) . ' MB' );

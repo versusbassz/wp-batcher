@@ -1,6 +1,6 @@
 <?php
 
-require dirname( __DIR__ ) . '/vendor/autoload.php';
+require dirname( __DIR__, 2 ) . '/vendor/autoload.php';
 
 $limit = 1000 * 1000 * 1000;
 
