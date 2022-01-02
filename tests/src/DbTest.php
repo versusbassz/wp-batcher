@@ -30,7 +30,7 @@ class DbTest extends \WP_UnitTestCase {
 		$this->log_value( 'start', memory_get_usage() );
 		wp_suspend_cache_addition( true );
 
-		$posts_qty = 1000;
+		$posts_qty = 500;
 		self::factory()->post->create_many( $posts_qty );
 
 		wp_suspend_cache_addition( false );
@@ -57,7 +57,7 @@ class DbTest extends \WP_UnitTestCase {
 		$this->log_value( 'after loop', $memory_usage_after );
 
 		$this->log_value( 'diff', $memory_usage_after - $memory_usage_before );
-		$this->assertGreaterThanOrEqual( 1 * 1000 * 1000, $memory_usage_after - $memory_usage_before );
+		$this->assertGreaterThan( 1 * 1000 * 1000, $memory_usage_after - $memory_usage_before );
 
 		unset( $posts_query, $post );
 		gc_collect_cycles();
@@ -72,7 +72,7 @@ class DbTest extends \WP_UnitTestCase {
 
 		wp_suspend_cache_addition( true );
 
-		$posts_qty = 1000;
+		$posts_qty = 500;
 		self::factory()->post->create_many( $posts_qty );
 
 		wp_suspend_cache_addition( false );
@@ -96,6 +96,7 @@ class DbTest extends \WP_UnitTestCase {
 
 				return $query->posts;
 			} )
+//			->use_suspend_cache_addition()
 			->set_items_per_page( 50 );
 
 		$this->log_value( 'before loop', memory_get_usage() );
@@ -111,6 +112,6 @@ class DbTest extends \WP_UnitTestCase {
 		$this->log_value( 'end', $memory_usage_after );
 		$this->log_value( 'diff', $memory_usage_after - $memory_usage_before );
 
-		$this->assertLessThanOrEqual( 1000 * 500, $memory_usage_after - $memory_usage_before );
+		$this->assertLessThan( 500 * 1000, $memory_usage_after - $memory_usage_before );
 	}
 }
