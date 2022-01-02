@@ -8,8 +8,8 @@
 		}
 	},
 	"require-dev": {
-		"johnpbloch/wordpress-core": "^5.8",
-		"phpunit/phpunit": "^9",
-		"symfony/var-dumper": "^5.3"
+		"phpunit/phpunit": "^7",
+		"symfony/var-dumper": "^5.3",
+		"yoast/phpunit-polyfills": "^1.0"
 	}
 }

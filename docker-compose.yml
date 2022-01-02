@@ -8,8 +8,12 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - "./:/var/www/html/wp-content/mu-plugins/wp-collections/"
-      - "./mu-loader.php:/var/www/html/wp-content/mu-plugins/mu-loader.php"
+      - "./Makefile:/var/www/html/Makefile"
+      - "./phpunit.xml:/var/www/html/phpunit.xml"
+      - "./vendor/:/var/www/html/vendor/"
+      - "./custom/:/var/www/html/custom/"
+      - "./tests/:/var/www/html/tests/"
+      - "./src/:/var/www/html/src/"
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_NAME: exampledb
