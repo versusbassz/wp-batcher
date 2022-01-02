@@ -76,7 +76,7 @@ abstract class BaseIterator implements Iterator {
 	 *
 	 * @var array
 	 */
-	protected $temporary_wp_actions;
+	protected $temporary_wp_actions = [];
 
 	/**
 	 * If true -> disable wp cache addition via wp_suspend_cache_addition() function
@@ -89,8 +89,8 @@ abstract class BaseIterator implements Iterator {
 	/**
 	 * Dumps the internal state of the object (for debugging/dev purposes)
 	 *
-	 * We don't use foreach here, because it uses same methods of "Iterator" interface and outputs chunks content
-	 * instead of the own internal properties of the object
+	 * We don't use foreach here, because it uses same methods of "Iterator" interface and outputs items of $this->chunk[]
+	 * instead of outputting the internal properties of the object
 	 *
 	 * @return array
 	 */
@@ -104,6 +104,8 @@ abstract class BaseIterator implements Iterator {
 			'items_per_page' => $this->items_per_page,
 			'limit' => $this->limit,
 			'changes_locked' => $this->changes_locked,
+			'temporary_wp_actions' => $this->temporary_wp_actions,
+			'use_suspend_cache_addition' => $this->use_suspend_cache_addition,
 		];
 	}
 
