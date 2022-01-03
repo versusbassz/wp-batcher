@@ -3,7 +3,8 @@ default:
 
 build-dev:
 	composer install
-	make download-phpunit
+	make download-wp-core
+	make download-wp-tests-lib
 
 # Dev-env
 run:
