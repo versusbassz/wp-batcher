@@ -5,7 +5,7 @@ namespace WpBatcher\Tests;
 use WpBatcher\CallbackBatcher;
 
 class DbTest extends \WP_UnitTestCase {
-	const DEBUG = false;
+	const DEBUG = true;
 
 	public function log_value( $message, $value_raw ) {
 		if ( ! self::DEBUG ) {
@@ -127,6 +127,9 @@ class DbTest extends \WP_UnitTestCase {
 
 		$this->assertSame( (string) $posts_qty, $this->getPostsCount() );
 
+		global $wp_actions;
+		$wp_actions_count_before = count( $wp_actions );
+
 		$iterable = (new CallbackBatcher())
 			->set_fetcher( function ( $paged, $posts_per_page ) {
 				$query = new \WP_Query( [
@@ -160,6 +163,13 @@ class DbTest extends \WP_UnitTestCase {
 		$this->log_value( 'diff', $memory_usage_after - $memory_usage_before );
 
 		$this->assertSame( $posts_qty, $iterations_count );
+
+		// test \WpBatcher\Cleaners::backup_wp_actions
+		$this->assertSame( $wp_actions_count_before, count( $wp_actions ) );
+
+		// test \WpBatcher\Cleaners::clear_wpdb_queries_log
+		global $wpdb;
+		$this->assertSame( [], $wpdb->queries );
 
 		// there is no posts without the field
 		$posts = new \WP_Query( [
