@@ -180,6 +180,8 @@ abstract class BaseIterator implements Iterator {
 			if ( $this->use_suspend_cache_addition ) {
 				wp_suspend_cache_addition( false );
 			}
+
+			$this->free_memory();
 		}
 	}
 
