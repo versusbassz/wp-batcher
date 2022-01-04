@@ -268,7 +268,9 @@ abstract class BaseIterator implements Iterator {
 		Cleaners::restore_wp_actions();
 		Cleaners::fix_wpquery_gc_problems();
 
-		// TODO should we launch this method if $this->use_suspend_cache_addition === true ???
-		Cleaners::clear_object_cache();
+		// seems like we don't need to clear object cache if wp_suspend_cache_addition() is activated
+		if ( ! $this->use_suspend_cache_addition ) {
+			Cleaners::clear_object_cache();
+		}
 	}
 }
