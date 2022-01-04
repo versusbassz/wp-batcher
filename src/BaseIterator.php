@@ -36,11 +36,11 @@ abstract class BaseIterator implements Iterator {
 	protected $total_position = 0;
 
 	/**
-	 * Was iterating over the object started
+	 * Has iteration over the object been started
 	 *
 	 * @var bool
 	 */
-	protected $first_iteration_executed = false;
+	protected $loop_started = false;
 
 	/**
 	 * The current number of a chunk we fetch
@@ -99,7 +99,7 @@ abstract class BaseIterator implements Iterator {
 			'chunk' => $this->chunk,
 			'chunk_position' => $this->chunk_position,
 			'total_position' => $this->total_position,
-			'first_iteration_executed' => $this->first_iteration_executed,
+			'loop_started' => $this->loop_started,
 			'paged' => $this->paged,
 			'items_per_page' => $this->items_per_page,
 			'limit' => $this->limit,
@@ -127,10 +127,10 @@ abstract class BaseIterator implements Iterator {
 		}
 
 		// handle N-th or 1st iteration
-		if ( $this->first_iteration_executed ) {
+		if ( $this->loop_started ) {
 			++$this->chunk_position;
 		} else {
-			$this->first_iteration_executed = true;
+			$this->loop_started = true;
 		}
 
 		++$this->total_position;

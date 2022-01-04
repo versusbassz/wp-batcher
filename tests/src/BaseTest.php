@@ -67,7 +67,7 @@ class BaseTest extends TestCase {
 			'chunk' => [],
 			'chunk_position' => 0,
 			'total_position' => 0,
-			'first_iteration_executed' => false,
+			'loop_started' => false,
 			'paged' => 0,
 			'items_per_page' => 3,
 			'limit' => 10,
