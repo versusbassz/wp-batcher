@@ -268,23 +268,12 @@ abstract class BaseIterator implements Iterator {
 	}
 
 	protected function free_memory() {
-		$this->clear_wpdb_queries_log();
+		Cleaners::clear_wpdb_queries_log();
 		$this->restore_wp_actions();
 		Cleaners::fix_wpquery_gc_problems();
 
 		// TODO should we launch this method if $this->use_suspend_cache_addition === true ???
 		Cleaners::clear_object_cache();
-	}
-
-	/**
-	 * @_from ElasticPress -> \ElasticPress\Command::stop_the_insanity()
-	 *
-	 * @return void
-	 */
-	protected function clear_wpdb_queries_log() {
-		global $wpdb;
-
-		$wpdb->queries = [];
 	}
 
 	protected function backup_wp_actions() {

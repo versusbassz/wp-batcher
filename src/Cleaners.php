@@ -12,6 +12,17 @@ class Cleaners {
 	 *
 	 * @return void
 	 */
+	public static function clear_wpdb_queries_log() {
+		global $wpdb;
+
+		$wpdb->queries = [];
+	}
+
+	/**
+	 * @_from ElasticPress -> \ElasticPress\Command::stop_the_insanity()
+	 *
+	 * @return void
+	 */
 	public static function clear_object_cache() {
 		global $wp_object_cache;
 
