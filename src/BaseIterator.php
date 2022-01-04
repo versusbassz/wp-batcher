@@ -215,6 +215,7 @@ abstract class BaseIterator implements Iterator {
 	 * @param $number int
 	 *
 	 * @return self
+	 * @throws Exception
 	 */
 	public function set_items_per_page( $number ) {
 		if ( $this->changes_locked ) {
@@ -229,6 +230,7 @@ abstract class BaseIterator implements Iterator {
 	 * @param $number int
 	 *
 	 * @return self
+	 * @throws Exception
 	 */
 	public function set_limit( $number ) {
 		if ( $this->changes_locked ) {
