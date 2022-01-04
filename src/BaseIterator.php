@@ -79,13 +79,6 @@ abstract class BaseIterator implements Iterator {
 	protected $changes_locked = false;
 
 	/**
-	 * The storage for preserving a state of global variable $wp_actions
-	 *
-	 * @var array
-	 */
-	protected $temporary_wp_actions = [];
-
-	/**
 	 * If true -> disable wp cache addition via wp_suspend_cache_addition() function
 	 * during iterating over items (till a last item)
 	 *
@@ -112,7 +105,6 @@ abstract class BaseIterator implements Iterator {
 			'items_per_page' => $this->items_per_page,
 			'limit' => $this->limit,
 			'changes_locked' => $this->changes_locked,
-			'temporary_wp_actions' => $this->temporary_wp_actions,
 			'use_suspend_cache_addition' => $this->use_suspend_cache_addition,
 		];
 	}
@@ -129,11 +121,12 @@ abstract class BaseIterator implements Iterator {
 		$this->changes_locked = true;
 
 		// onStart
-		$this->backup_wp_actions();
+		Cleaners::backup_wp_actions();
 
 		if ( $this->use_suspend_cache_addition ) {
 			wp_suspend_cache_addition( true );
 		}
+		// /onStart
 
 		$this->next();
 	}
@@ -271,27 +264,10 @@ abstract class BaseIterator implements Iterator {
 
 	protected function free_memory() {
 		Cleaners::clear_wpdb_queries_log();
-		$this->restore_wp_actions();
+		Cleaners::restore_wp_actions();
 		Cleaners::fix_wpquery_gc_problems();
 
 		// TODO should we launch this method if $this->use_suspend_cache_addition === true ???
 		Cleaners::clear_object_cache();
-	}
-
-	protected function backup_wp_actions() {
-		global $wp_actions;
-
-		$this->temporary_wp_actions = $wp_actions;
-	}
-
-	/**
-	 * @_from ElasticPress -> \ElasticPress\Command::stop_the_insanity()
-	 *
-	 * @return void
-	 */
-	protected function restore_wp_actions() {
-		global $wp_actions;
-
-		$wp_actions = $this->temporary_wp_actions;
 	}
 }

@@ -73,7 +73,6 @@ class BaseTest extends TestCase {
 			'items_per_page' => 3,
 			'limit' => 10,
 			'changes_locked' => false,
-			'temporary_wp_actions' => [],
 			'use_suspend_cache_addition' => false,
 		];
 

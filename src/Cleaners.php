@@ -19,6 +19,49 @@ class Cleaners {
 	}
 
 	/**
+	 * The storage for preserving a state of global variable $wp_actions
+	 *
+	 * @var array
+	 *
+	 * @_from ElasticPress -> \ElasticPress\Command::stop_the_insanity()\
+	 */
+	protected static $temporary_wp_actions = [];
+
+	/**
+	 * @return void
+	 */
+	public static function backup_wp_actions() {
+		global $wp_actions;
+
+		self::$temporary_wp_actions = $wp_actions;
+	}
+
+	/**
+	 * @return void
+	 */
+	public static function restore_wp_actions() {
+		global $wp_actions;
+
+		$wp_actions = self::$temporary_wp_actions;
+	}
+
+	/**
+	 * @return array
+	 */
+	public static function get_temporary_wp_actions() {
+		return self::$temporary_wp_actions;
+	}
+
+	/**
+	 * Use it only after a loop is finished!
+	 *
+	 * @return void
+	 */
+	public static function clear_temporary_wp_actions() {
+		self::$temporary_wp_actions = [];
+	}
+
+	/**
 	 * @_from ElasticPress -> \ElasticPress\Command::stop_the_insanity()
 	 *
 	 * @return void
