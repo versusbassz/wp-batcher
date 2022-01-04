@@ -15,13 +15,13 @@ class BaseTest extends TestCase {
 
 		$actual = [];
 
-		foreach ( $iterator as $item ) {
+		foreach ( $iterator as $key => $item ) {
 			$actual[] = $item;
 		}
 
 		$this->assertSame( range( 1, 10 ), $actual );
-		$this->assertSame( 11, $iterator->key() );
-		$this->assertSame( 11, $iterator->current() ); // TODO null ???
+		$this->assertSame( 10, $iterator->key() );
+		$this->assertNull( $iterator->current() );
 		$this->assertFalse( $iterator->valid() );
 	}
 
@@ -68,6 +68,7 @@ class BaseTest extends TestCase {
 			'chunk_position' => 0,
 			'total_position' => 0,
 			'loop_started' => false,
+			'loop_finished' => false,
 			'paged' => 0,
 			'items_per_page' => 3,
 			'limit' => 10,

@@ -43,6 +43,13 @@ abstract class BaseIterator implements Iterator {
 	protected $loop_started = false;
 
 	/**
+	 * Has iteration over the object been finished
+	 *
+	 * @var bool
+	 */
+	protected $loop_finished = false;
+
+	/**
 	 * The current number of a chunk we fetch
 	 *
 	 * @var int
@@ -100,6 +107,7 @@ abstract class BaseIterator implements Iterator {
 			'chunk_position' => $this->chunk_position,
 			'total_position' => $this->total_position,
 			'loop_started' => $this->loop_started,
+			'loop_finished' => $this->loop_finished,
 			'paged' => $this->paged,
 			'items_per_page' => $this->items_per_page,
 			'limit' => $this->limit,
@@ -110,7 +118,7 @@ abstract class BaseIterator implements Iterator {
 	}
 
 	public function current() {
-		if ( ! isset( $this->chunk[ $this->chunk_position ] ) ) {
+		if ( $this->loop_finished ) {
 			return null;
 		}
 
@@ -122,29 +130,43 @@ abstract class BaseIterator implements Iterator {
 	 * @throws Exception
 	 */
 	public function next() {
-		if ( $this->limit_exceeded() ) {
-			return;
-		}
-
 		// handle N-th or 1st iteration
 		if ( $this->loop_started ) {
 			++$this->chunk_position;
+			++$this->total_position;
 		} else {
 			$this->loop_started = true;
 		}
 
-		++$this->total_position;
+		// check limit
+		if ( $this->limit_exceeded() ) {
+			$this->loop_finished = true;
+			return;
+		}
 
-		// fetch a new chunk
+		// fetch a new chunk if it's necessary
 		if ( ! isset( $this->chunk[ $this->chunk_position ] ) ) {
 			++$this->paged;
 
-			if ( $this->total_position >= 2 ) {
+			// don't run memory clearing on 1st chunk
+			if ( $this->total_position >= 1 ) {
 				$this->free_memory();
 			}
 
 			$this->chunk = $this->fetch_chunk();
 			$this->chunk_position = 0;
+		}
+
+		// check that a new item/chunk is valid
+		$is_valid = isset( $this->chunk[ $this->chunk_position ] );
+
+		if ( ! $is_valid ) {
+			$this->loop_finished = true;
+
+			// onFinish
+			if ( $this->use_suspend_cache_addition ) {
+				wp_suspend_cache_addition( false );
+			}
 		}
 	}
 
@@ -153,20 +175,7 @@ abstract class BaseIterator implements Iterator {
 	}
 
 	public function valid() {
-		if ( $this->limit_exceeded() ) {
-			return false;
-		}
-
-		$is_valid = isset( $this->chunk[ $this->chunk_position ] );
-
-		if ( ! $is_valid ) {
-			// onFinish
-			if ( $this->use_suspend_cache_addition ) {
-				wp_suspend_cache_addition( false );
-			}
-		}
-
-		return $is_valid;
+		return ! $this->loop_finished;
 	}
 
 	/**
@@ -241,7 +250,7 @@ abstract class BaseIterator implements Iterator {
 	 * @return bool
 	 */
 	protected function limit_exceeded() {
-		return $this->has_limit() && $this->total_position > $this->limit;
+		return $this->has_limit() && $this->total_position >= $this->limit;
 	}
 
 	/**
