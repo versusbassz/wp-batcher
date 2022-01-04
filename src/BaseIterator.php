@@ -117,12 +117,25 @@ abstract class BaseIterator implements Iterator {
 		];
 	}
 
-	public function current() {
-		if ( $this->loop_finished ) {
-			return null;
+	/**
+	 * @return void
+	 * @throws Exception
+	 */
+	public function rewind() {
+		if ( $this->changes_locked ) {
+			throw new Exception( 'Changes were locked before. Note: this object can be used only as a generator, no rewind functionality after 1st foreach iteration' );
 		}
 
-		return $this->chunk[ $this->chunk_position ];
+		$this->changes_locked = true;
+
+		// onStart
+		$this->backup_wp_actions();
+
+		if ( $this->use_suspend_cache_addition ) {
+			wp_suspend_cache_addition( true );
+		}
+
+		$this->next();
 	}
 
 	/**
@@ -170,33 +183,20 @@ abstract class BaseIterator implements Iterator {
 		}
 	}
 
-	public function key() {
-		return $this->total_position;
-	}
-
 	public function valid() {
 		return ! $this->loop_finished;
 	}
 
-	/**
-	 * @return void
-	 * @throws Exception
-	 */
-	public function rewind() {
-		if ( $this->changes_locked ) {
-			throw new Exception( 'Changes were locked before. Note: this object can be used only as a generator, no rewind functionality after 1st foreach iteration' );
+	public function current() {
+		if ( $this->loop_finished ) {
+			return null;
 		}
 
-		$this->changes_locked = true;
+		return $this->chunk[ $this->chunk_position ];
+	}
 
-		// onStart
-		$this->backup_wp_actions();
-
-		if ( $this->use_suspend_cache_addition ) {
-			wp_suspend_cache_addition( true );
-		}
-
-		$this->next();
+	public function key() {
+		return $this->total_position;
 	}
 
 	/**
