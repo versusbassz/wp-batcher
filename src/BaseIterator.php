@@ -175,6 +175,7 @@ abstract class BaseIterator implements Iterator {
 			}
 
 			$this->free_memory();
+			Cleaners::clear_temporary_wp_actions();
 		}
 	}
 
