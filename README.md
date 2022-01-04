@@ -7,6 +7,8 @@ this library tries to help you to write less code and avoid OOM.
 ## How to use
 
 ```php
+use \WpBatcher\CallbackBatcher;
+
 $iterator = (new CallbackBatcher())
 	// Provide a callback that will fetch data you want to iterate over.
 	// Pls, pay attention to its signature.
@@ -40,7 +42,7 @@ $iterator = (new CallbackBatcher())
 	->use_suspend_cache_addition( true );
 
 	foreach ( $iterator as $post ) {
-		$value = wp_remote_retrieve_body( wp_remote_get( 'https://example.org/api/' ) );
+		$value = wp_remote_retrieve_body( wp_remote_get( "https://example.org/api/{$post->ID}/" ) );
 		$update_result = update_post_meta( $post->ID, 'test_field', $value );
 	}
 ```
