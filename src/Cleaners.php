@@ -10,6 +10,46 @@ class Cleaners {
 	/**
 	 * @_from ElasticPress -> \ElasticPress\Command::stop_the_insanity()
 	 *
+	 * @return void
+	 */
+	public static function clear_object_cache() {
+		global $wp_object_cache;
+
+		if ( is_object( $wp_object_cache ) ) {
+			// TODO what is about PHP v8.1 ? (dynamic props deprecation)
+			$wp_object_cache->group_ops = [];
+			$wp_object_cache->stats = [];
+			$wp_object_cache->memcache_debug = [];
+
+			// Make sure this is a public property, before trying to clear it.
+			try {
+				$cache_property = new \ReflectionProperty( $wp_object_cache, 'cache' );
+				if ( $cache_property->isPublic() ) {
+					$wp_object_cache->cache = [];
+				}
+				unset( $cache_property );
+			} catch ( \ReflectionException $e ) {
+				// No need to catch.
+			}
+
+			/*
+			 * In the case where we're not using an external object cache, we need to call flush on the default
+			 * WordPress object cache class to clear the values from the cache property
+			 */
+			if ( ! wp_using_ext_object_cache() ) {
+				wp_cache_flush();
+			}
+
+			// @see https://core.trac.wordpress.org/ticket/31463#comment:4
+			if ( method_exists( $wp_object_cache, '__remoteset' ) ) {
+				call_user_func( [ $wp_object_cache, '__remoteset' ] );
+			}
+		}
+	}
+
+	/**
+	 * @_from ElasticPress -> \ElasticPress\Command::stop_the_insanity()
+	 *
 	 * WP_Query class adds filter get_term_metadata using its own instance
 	 * what prevents WP_Query class from being destructed by PHP gc.
 	 *
