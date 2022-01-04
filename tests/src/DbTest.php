@@ -66,7 +66,7 @@ class DbTest extends \WP_UnitTestCase {
 		$this->log_value( 'after manual cleaning', memory_get_usage() );
 	}
 
-	public function testLibraryConsumption() {
+	public function testLibraryMemoryConsumption() {
 		$this->log( '========================================' );
 		$this->log_value( 'start', memory_get_usage() );
 
