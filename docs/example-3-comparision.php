@@ -1,8 +1,16 @@
 <?php
 
+exit;
+
 /**
  * Just ideas about a possible interface of the library
  */
+
+use WpBatcher\CallbackIterator;
+use WpBatcher\WpBatcher;
+
+// ==============================================================================
+// The example of code without using the library
 
 $paged = 1;
 
@@ -30,8 +38,9 @@ while ( true ) {
 wp_suspend_cache_addition( false );
 
 // ==============================================================================
+// Raw usage of CallbackIterator class
 
-$iterator = (new CallbackBatcher())
+$iterator = (new CallbackIterator())
 	->set_fetcher( function ( $paged, $items_per_page ) {
 		return get_posts( [
 			'paged' => $paged,
@@ -48,6 +57,7 @@ foreach ( $items as $item ) {
 }
 
 // ==============================================================================
+// Trying to build CallbackIterator using the helper (-1 line)
 
 $iterator = callback_iterator( function ( $paged, $items_per_page ) {
 		return get_posts( [
@@ -65,6 +75,7 @@ foreach ( $items as $item ) {
 }
 
 // ==============================================================================
+// Building CallbackIterator using the shorthand helper (-3 lines), ugly...
 
 $iterator = callback_iterator( fn ( $paged, $items_per_page ) => get_posts( [
 		'paged' => $paged,
@@ -80,37 +91,47 @@ foreach ( $items as $item ) {
 }
 
 // ==============================================================================
+// Building CallbackIterator using the Fabric Method
 
-$iterator = BulkIterator::get_posts( [
+$iterator = WpBatcher::get_posts( [
 	'orderby' => 'ID',
 	'order' => 'ASC',
 ] )
-	->set_items_per_page( 500 )
-	->use_suspend_cache_addition();
+                     ->set_items_per_page( 500 )
+                     ->use_suspend_cache_addition();
 
 foreach ( $items as $item ) {
 	// Payload
 }
 
 // ==============================================================================
+// Prev + simplify (shorten) names of the methods (remove "use/set")
 
-$iterator = BulkIterator::get_posts( [
+$iterator = WpBatcher::get_posts( [
 	'orderby' => 'ID',
 	'order' => 'ASC',
 ] )
-	->items_per_page( 500 )
-	->suspend_cache_addition();
+                     ->items_per_page( 500 )
+                     ->suspend_cache_addition();
 
 foreach ( $items as $item ) {
 	// Payload
 }
 
 // ==============================================================================
+// Prev + default args
 
-$iterator = BulkIterator::get_posts( [
-	'orderby' => 'ID',
-	'order' => 'ASC',
+$iterator = WpBatcher::get_posts( [
 ] );
+
+foreach ( $items as $item ) {
+	// Payload
+}
+
+// ==============================================================================
+// Prev + saving 1 extra line (the N1 sample for promotion)
+
+$iterator = WpBatcher::get_posts();
 
 foreach ( $items as $item ) {
 	// Payload

@@ -1,13 +1,17 @@
 <?php
 
+exit;
+
+use WpBatcher\CallbackIterator;
+
 // Interface v1
-$items = ( new CallbackBatcher(function ( $paged, $posts_per_page ) {
+$items = ( new CallbackIterator(function ( $paged, $posts_per_page ) {
 	return new WP_Query( [
 		'posts_per_page' => $posts_per_page,
 		'paged' => $paged,
 	] );
 }) )
-	->set_posts_per_page( 100 )
+	->set_items_per_page( 100 )
 	->enable_wp_loop();
 
 $posts_with_thumbnails = 0;
@@ -19,7 +23,7 @@ foreach ( $items as $item ) {
 }
 
 // Interface v2
-$items = ( new CallbackBatcher() )
+$items = ( new CallbackIterator() )
 	->set_fetcher( function ( $paged, $posts_per_page ) {
 		return new WP_Query( [
 			'posts_per_page' => $posts_per_page,
@@ -32,7 +36,7 @@ $items = ( new CallbackBatcher() )
 //			'paged' => $paged,
 //		] ))->posts;
 	} )
-	->set_posts_per_page( 100 )
+	->set_items_per_page( 100 )
 	->enable_wp_loop();
 
 $posts_with_thumbnails = 0;

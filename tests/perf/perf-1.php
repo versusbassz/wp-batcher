@@ -2,7 +2,7 @@
 
 // time php ./tests/perf/perf-1.php custom|regular
 
-use WpBatcher\CallbackBatcher;
+use WpBatcher\CallbackIterator;
 
 require dirname( __DIR__, 2 ) . '/vendor/autoload.php';
 require dirname( __DIR__, 2 ) . '/tests/helpers.php';
@@ -17,7 +17,7 @@ $countdown_start = microtime( true );
 
 switch ( $argv[1] ) {
 	case 'custom':
-		$iterable = (new CallbackBatcher())
+		$iterable = (new CallbackIterator())
 			->set_fetcher( 'WpBatcher\\Tests\\paged_range' )
 //			->set_fetcher( 'WpBatcher\\Tests\\get_filled_array' )
 			->set_limit( $limit )

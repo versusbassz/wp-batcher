@@ -7,9 +7,9 @@ this library tries to help you to write less code and avoid OOM.
 ## How to use
 
 ```php
-use \WpBatcher\CallbackBatcher;
+use \WpBatcher\CallbackIterator;
 
-$iterator = (new CallbackBatcher())
+$iterator = (new CallbackIterator())
 	// Provide a callback that will fetch data you want to iterate over.
 	// Pls, pay attention to its signature.
 	->set_fetcher( function ( $paged, $items_per_page ) {
@@ -37,9 +37,8 @@ $iterator = (new CallbackBatcher())
 
 	// Suspend WP cache addition before a loop
 	// and unsuspend it when the loop has been finished.
-	// true - enable, false - disable
-	// Disabled by default.
-	->use_suspend_cache_addition( true );
+	// It's disabled by default.
+	->use_cache_suspending();
 
 	foreach ( $iterator as $post ) {
 		$value = wp_remote_retrieve_body( wp_remote_get( "https://example.org/api/{$post->ID}/" ) );

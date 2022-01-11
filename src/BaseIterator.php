@@ -5,6 +5,13 @@ namespace WpBatcher;
 use Exception;
 use Iterator;
 
+use WpBatcher\Events\OnStart;
+use WpBatcher\Events\AfterEachChunk;
+use WpBatcher\Events\OnFinish;
+use WpBatcher\Feature\Feature;
+use WpBatcher\Feature\CacheCleaner;
+use WpBatcher\Feature\CacheSuspender;
+
 abstract class BaseIterator implements Iterator {
 	/**
 	 * The callback (callable) for fetching chunks of items
@@ -79,12 +86,18 @@ abstract class BaseIterator implements Iterator {
 	protected $changes_locked = false;
 
 	/**
-	 * If true -> disable wp cache addition via wp_suspend_cache_addition() function
-	 * during iterating over items (till a last item)
-	 *
-	 * @var bool
+	 * @var Feature[]
 	 */
-	protected $use_suspend_cache_addition = false;
+	protected $features = [];
+
+	/**
+	 * @var array
+	 */
+	protected $handlers = [
+		'onStart' => [],
+		'afterEachChunk' => [],
+		'onFinish' => [],
+	];
 
 	/**
 	 * Dumps the internal state of the object (for debugging/dev purposes)
@@ -95,6 +108,16 @@ abstract class BaseIterator implements Iterator {
 	 * @return array
 	 */
 	public function dump() {
+		$get_name = function ( Feature $item ) {
+			return $item->get_name();
+		};
+
+		$handlers = [];
+
+		foreach ( $this->handlers as $event => $handlers_list ) {
+			$handlers[ $event ] = array_values( array_map( $get_name, $handlers_list ) );
+		}
+
 		return [
 			'chunk' => $this->chunk,
 			'chunk_position' => $this->chunk_position,
@@ -105,7 +128,8 @@ abstract class BaseIterator implements Iterator {
 			'items_per_page' => $this->items_per_page,
 			'limit' => $this->limit,
 			'changes_locked' => $this->changes_locked,
-			'use_suspend_cache_addition' => $this->use_suspend_cache_addition,
+			'features' => array_values( array_map( $get_name, $this->features ) ),
+			'handlers' => $handlers,
 		];
 	}
 
@@ -120,13 +144,7 @@ abstract class BaseIterator implements Iterator {
 
 		$this->changes_locked = true;
 
-		// onStart
-		Cleaners::backup_wp_actions();
-
-		if ( $this->use_suspend_cache_addition ) {
-			wp_suspend_cache_addition( true );
-		}
-		// /onStart
+		$this->do_event( 'onStart' );
 
 		$this->next();
 	}
@@ -156,26 +174,21 @@ abstract class BaseIterator implements Iterator {
 
 			// don't run memory clearing on 1st chunk
 			if ( $this->total_position >= 1 ) {
-				$this->free_memory();
+				$this->do_event( 'afterEachChunk' );
 			}
 
 			$this->chunk = $this->fetch_chunk();
 			$this->chunk_position = 0;
 		}
 
-		// check that a new item/chunk is valid
+		// wrap up if chunk/item//position are not valid
 		$is_valid = isset( $this->chunk[ $this->chunk_position ] );
 
 		if ( ! $is_valid ) {
 			$this->loop_finished = true;
 
-			// onFinish
-			if ( $this->use_suspend_cache_addition ) {
-				wp_suspend_cache_addition( false );
-			}
-
-			$this->free_memory();
-			Cleaners::clear_temporary_wp_actions();
+			$this->do_event( 'afterEachChunk' );
+			$this->do_event( 'onFinish' );
 		}
 	}
 
@@ -251,26 +264,102 @@ abstract class BaseIterator implements Iterator {
 		return $this->has_limit() && $this->total_position >= $this->limit;
 	}
 
+	protected function do_event( $event_name ) {
+		if ( ! isset( $this->handlers[ $event_name ] ) || ! count( $this->handlers[ $event_name ] ) ) {
+			return;
+		}
+
+		foreach ( $this->handlers[ $event_name ] as $handler ) {
+			call_user_func( [ $handler, $event_name ] );
+		}
+	}
+
 	/**
-	 * Enable/disable applying of wp_suspend_cache_addition() function on start/end of a loop.
-	 *
-	 * @param bool $use
+	 * @param Feature $feature
 	 *
 	 * @return self
 	 */
-	public function use_suspend_cache_addition( $use = true ) {
-		$this->use_suspend_cache_addition = (bool) $use;
+	public function add_feature( Feature $feature ) {
+		$feature_name = $feature->get_name();
+
+		if ( isset( $this->features[ $feature_name ] ) ) {
+			return $this;
+		}
+
+		$events = self::get_events_info();
+
+		$at_least_one_event_added = false;
+
+		foreach ( $events as $event ) {
+			if ( ! is_a( $feature, $event['interface'] ) ) {
+				continue;
+			}
+
+			if ( ! isset( $this->handlers[ $event['method'] ] ) ) {
+				$this->handlers[ $event['method'] ] = [];
+			}
+
+			$at_least_one_event_added = true;
+			$this->handlers[ $event['method'] ][ $feature_name ] = $feature;
+		}
+
+		if ( ! $at_least_one_event_added ) {
+			throw new Exception( 'There are no event handlers in the provided Feature object' );
+		}
+
+		$this->features[ $feature_name ] = $feature;
+
 		return $this;
 	}
 
-	protected function free_memory() {
-		Cleaners::clear_wpdb_queries_log();
-		Cleaners::restore_wp_actions();
-		Cleaners::fix_wpquery_gc_problems();
-
-		// seems like we don't need to clear object cache if wp_suspend_cache_addition() is activated
-		if ( ! $this->use_suspend_cache_addition ) {
-			Cleaners::clear_object_cache();
+	/**
+	 * @param string $feature_name
+	 *
+	 * @return self
+	 */
+	public function remove_feature( $feature_name ) {
+		if ( ! isset( $this->features[ $feature_name ] ) ) {
+			return $this;
 		}
+
+		$events = self::get_events_info();
+
+		foreach ( $events as $event ) {
+			if ( isset( $this->handlers[ $event['method'] ][ $feature_name ] ) ) {
+				unset( $this->handlers[ $event['method'] ][ $feature_name ] );
+			}
+		}
+
+		unset( $this->features[ $feature_name ] );
+
+		return $this;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function use_cache_suspending() {
+		$this->remove_feature( CacheCleaner::class );
+		$this->add_feature( new CacheSuspender() );
+
+		return $this;
+	}
+
+	/**
+	 * @return self
+	 */
+	public function use_cache_clearing() {
+		$this->remove_feature( CacheSuspender::class );
+		$this->add_feature( new CacheCleaner() );
+
+		return $this;
+	}
+
+	protected static function get_events_info() {
+		return [
+			[ 'interface' => OnStart::class, 'method' => 'onStart', ],
+			[ 'interface' => OnFinish::class, 'method' => 'onFinish', ],
+			[ 'interface' => AfterEachChunk::class, 'method' => 'afterEachChunk', ],
+		];
 	}
 }

@@ -1,5 +1,7 @@
 <?php
 
+exit;
+
 // Regular usage
 
 $items = new WP_Query( [

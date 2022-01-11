@@ -2,7 +2,7 @@
 
 namespace WpBatcher\Tests;
 
-use WpBatcher\CallbackBatcher;
+use WpBatcher\WpBatcher;
 
 class DbTest extends \WP_UnitTestCase {
 	public function testSimpleWpQueryMemoryConsumption() {
@@ -63,8 +63,7 @@ class DbTest extends \WP_UnitTestCase {
 
 		$memory_usage_before = memory_get_usage();
 
-		$iterable = (new CallbackBatcher())
-			->set_fetcher( function ( $paged, $posts_per_page ) {
+		$iterable = WpBatcher::callback( function ( $paged, $posts_per_page ) {
 				$query = new \WP_Query( [
 					'post_type' => [ 'post' ],
 					'post_status' => [ 'any' ],
@@ -111,8 +110,7 @@ class DbTest extends \WP_UnitTestCase {
 		global $wp_actions;
 		$wp_actions_count_before = count( $wp_actions );
 
-		$iterable = (new CallbackBatcher())
-			->set_fetcher( function ( $paged, $posts_per_page ) {
+		$iterable = WpBatcher::callback( function ( $paged, $posts_per_page ) {
 				$query = new \WP_Query( [
 					'post_type' => [ 'post' ],
 					'post_status' => [ 'any' ],

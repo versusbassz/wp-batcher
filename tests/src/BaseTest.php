@@ -4,11 +4,16 @@ namespace WpBatcher\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use WpBatcher\CallbackBatcher;
+use WpBatcher\WpBatcher;
+use WpBatcher\CallbackIterator;
+use WpBatcher\Feature\CacheCleaner;
+use WpBatcher\Feature\WpActionsRestorer;
+use WpBatcher\Feature\WpdbQueriesLogCleaner;
+use WpBatcher\Feature\WpQueryGcProblemsFixer;
 
 class BaseTest extends TestCase {
 	public function testCallbackBatcher() {
-		$iterator = (new CallbackBatcher())
+		$iterator = (new CallbackIterator())
 			->set_fetcher( 'WpBatcher\\Tests\\paged_range' )
 			->set_items_per_page( 3 )
 			->set_limit( 10 );
@@ -57,8 +62,8 @@ class BaseTest extends TestCase {
 		];
 	}
 
-	public function testDump() {
-		$iterator = (new CallbackBatcher())
+	public function testDumpSimple() {
+		$iterator = (new CallbackIterator())
 			->set_fetcher( 'WpBatcher\\Tests\\paged_range' )
 			->set_items_per_page( 3 )
 			->set_limit( 10 );
@@ -73,9 +78,119 @@ class BaseTest extends TestCase {
 			'items_per_page' => 3,
 			'limit' => 10,
 			'changes_locked' => false,
-			'use_suspend_cache_addition' => false,
+			'features' => [],
+			'handlers' => [
+				'onStart' => [],
+				'afterEachChunk' => [],
+				'onFinish' => []
+			],
 		];
 
 		$this->assertSame( $expected, $iterator->dump() );
+	}
+
+	public function testDumpComplex() {
+		$iterator = WpBatcher::callback( 'WpBatcher\\Tests\\paged_range' )
+		                     ->set_items_per_page( 3 )
+		                     ->set_limit( 10 );
+
+		$expected = [
+			'chunk' => [],
+			'chunk_position' => 0,
+			'total_position' => 0,
+			'loop_started' => false,
+			'loop_finished' => false,
+			'paged' => 0,
+			'items_per_page' => 3,
+			'limit' => 10,
+			'changes_locked' => false,
+			'features' => [
+				CacheCleaner::class,
+				WpQueryGcProblemsFixer::class,
+				WpdbQueriesLogCleaner::class,
+				WpActionsRestorer::class,
+			],
+			'handlers' => [
+				'onStart' => [
+					WpActionsRestorer::class,
+				],
+				'afterEachChunk' => [
+					CacheCleaner::class,
+					WpQueryGcProblemsFixer::class,
+					WpdbQueriesLogCleaner::class,
+					WpActionsRestorer::class,
+				],
+				'onFinish' => [
+					WpActionsRestorer::class,
+				],
+			],
+		];
+
+		$this->assertSame( $expected, $iterator->dump() );
+	}
+
+	public function testActionsOnFeatures() {
+		$iterator = (new CallbackIterator())
+			->set_fetcher( 'WpBatcher\\Tests\\paged_range' )
+			->set_limit( 10 );
+
+		// Empty
+		$state = $iterator->dump();
+
+		$this->assertCount( 0, $state['features'] );
+		$this->assertCount( 0, $state['handlers']['onStart'] );
+		$this->assertCount( 0, $state['handlers']['afterEachChunk'] );
+		$this->assertCount( 0, $state['handlers']['onFinish'] );
+
+		// Add feature
+		$feature = new CacheCleaner();
+		$iterator->add_feature( $feature );
+
+		$state = $iterator->dump();
+
+		$this->assertCount( 1, $state['features'] );
+		$this->assertCount( 0, $state['handlers']['onStart'] );
+		$this->assertCount( 1, $state['handlers']['afterEachChunk'] );
+		$this->assertCount( 0, $state['handlers']['onFinish'] );
+
+		// Remove feature
+		$iterator->remove_feature( $feature->get_name() );
+
+		$state = $iterator->dump();
+
+		$this->assertCount( 0, $state['features'] );
+		$this->assertCount( 0, $state['handlers']['onStart'] );
+		$this->assertCount( 0, $state['handlers']['afterEachChunk'] );
+		$this->assertCount( 0, $state['handlers']['onFinish'] );
+
+		// use_cache_suspending
+		$iterator->use_cache_suspending();
+
+		$state = $iterator->dump();
+
+		$this->assertCount( 1, $state['features'] );
+		$this->assertCount( 1, $state['handlers']['onStart'] );
+		$this->assertCount( 0, $state['handlers']['afterEachChunk'] );
+		$this->assertCount( 1, $state['handlers']['onFinish'] );
+
+		// use_cache_clearing
+		$iterator->use_cache_clearing();
+
+		$state = $iterator->dump();
+
+		$this->assertCount( 1, $state['features'] );
+		$this->assertCount( 0, $state['handlers']['onStart'] );
+		$this->assertCount( 1, $state['handlers']['afterEachChunk'] );
+		$this->assertCount( 0, $state['handlers']['onFinish'] );
+
+		// and again "use_cache_suspending" (to check the correct removing of "use_cache_clearing")
+		$iterator->use_cache_suspending();
+
+		$state = $iterator->dump();
+
+		$this->assertCount( 1, $state['features'] );
+		$this->assertCount( 1, $state['handlers']['onStart'] );
+		$this->assertCount( 0, $state['handlers']['afterEachChunk'] );
+		$this->assertCount( 1, $state['handlers']['onFinish'] );
 	}
 }

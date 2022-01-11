@@ -2,12 +2,12 @@
 
 namespace WpBatcher;
 
-class CallbackBatcher extends BaseIterator {
+class CallbackIterator extends BaseIterator {
 	/**
-	 * @var callable|null
+	 * @param callable $fetcher
+	 *
+	 * @return self
 	 */
-	protected $fetcher;
-
 	public function set_fetcher( callable $fetcher ) {
 		$this->fetcher = $fetcher;
 		return $this;
