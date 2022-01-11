@@ -1,9 +1,9 @@
 <?php
 
-namespace WpBatcher\Feature;
+namespace Versusbassz\WpBatcher\Feature;
 
-use WpBatcher\Events\AfterEachChunk;
-use WpBatcher\Cleaners;
+use Versusbassz\WpBatcher\Events\AfterEachChunk;
+use Versusbassz\WpBatcher\Cleaners;
 
 class WpdbQueriesLogCleaner extends Feature implements AfterEachChunk {
 	public function afterEachChunk() {

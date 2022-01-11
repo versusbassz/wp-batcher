@@ -1,6 +1,6 @@
 <?php
 
-namespace WpBatcher\Events;
+namespace Versusbassz\WpBatcher\Events;
 
 interface AfterEachChunk {
 	/**

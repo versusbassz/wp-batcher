@@ -4,7 +4,7 @@
  * Grouped into the class just for autoloading.
  */
 
-namespace WpBatcher;
+namespace Versusbassz\WpBatcher;
 
 class Cleaners {
 	/**

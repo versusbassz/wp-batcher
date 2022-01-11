@@ -1,16 +1,16 @@
 <?php
 
-namespace WpBatcher;
+namespace Versusbassz\WpBatcher;
 
 use Exception;
 use Iterator;
 
-use WpBatcher\Events\OnStart;
-use WpBatcher\Events\AfterEachChunk;
-use WpBatcher\Events\OnFinish;
-use WpBatcher\Feature\Feature;
-use WpBatcher\Feature\CacheCleaner;
-use WpBatcher\Feature\CacheSuspender;
+use Versusbassz\WpBatcher\Events\OnStart;
+use Versusbassz\WpBatcher\Events\AfterEachChunk;
+use Versusbassz\WpBatcher\Events\OnFinish;
+use Versusbassz\WpBatcher\Feature\Feature;
+use Versusbassz\WpBatcher\Feature\CacheCleaner;
+use Versusbassz\WpBatcher\Feature\CacheSuspender;
 
 abstract class BaseIterator implements Iterator {
 	/**

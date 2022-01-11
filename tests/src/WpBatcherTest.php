@@ -1,12 +1,12 @@
 <?php
 
-namespace WpBatcher\Tests;
+namespace Versusbassz\WpBatcher\Tests;
 
 use WP_Comment;
 use WP_Term;
 use WP_UnitTestCase;
 
-use WpBatcher\WpBatcher;
+use Versusbassz\WpBatcher\WpBatcher;
 
 class WpBatcherTest extends WP_UnitTestCase {
 	public function testGetPostsMethod() {

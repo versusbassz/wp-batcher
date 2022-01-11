@@ -1,6 +1,6 @@
 <?php
 
-namespace WpBatcher\Tests;
+namespace Versusbassz\WpBatcher\Tests;
 
 const DEBUG = false;
 

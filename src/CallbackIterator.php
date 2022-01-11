@@ -1,6 +1,6 @@
 <?php
 
-namespace WpBatcher;
+namespace Versusbassz\WpBatcher;
 
 class CallbackIterator extends BaseIterator {
 	/**

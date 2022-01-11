@@ -1,11 +1,11 @@
 <?php
 
-namespace WpBatcher;
+namespace Versusbassz\WpBatcher;
 
-use WpBatcher\Feature\CacheCleaner;
-use WpBatcher\Feature\WpActionsRestorer;
-use WpBatcher\Feature\WpdbQueriesLogCleaner;
-use WpBatcher\Feature\WpQueryGcProblemsFixer;
+use Versusbassz\WpBatcher\Feature\CacheCleaner;
+use Versusbassz\WpBatcher\Feature\WpActionsRestorer;
+use Versusbassz\WpBatcher\Feature\WpdbQueriesLogCleaner;
+use Versusbassz\WpBatcher\Feature\WpQueryGcProblemsFixer;
 
 class WpBatcher {
 	/**

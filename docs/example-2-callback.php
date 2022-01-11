@@ -2,7 +2,7 @@
 
 exit;
 
-use WpBatcher\CallbackIterator;
+use Versusbassz\WpBatcher\CallbackIterator;
 
 // Interface v1
 $items = ( new CallbackIterator(function ( $paged, $posts_per_page ) {

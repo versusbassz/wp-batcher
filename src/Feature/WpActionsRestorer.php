@@ -1,11 +1,11 @@
 <?php
 
-namespace WpBatcher\Feature;
+namespace Versusbassz\WpBatcher\Feature;
 
-use WpBatcher\Cleaners;
-use WpBatcher\Events\OnStart;
-use WpBatcher\Events\AfterEachChunk;
-use WpBatcher\Events\OnFinish;
+use Versusbassz\WpBatcher\Cleaners;
+use Versusbassz\WpBatcher\Events\OnStart;
+use Versusbassz\WpBatcher\Events\AfterEachChunk;
+use Versusbassz\WpBatcher\Events\OnFinish;
 
 class WpActionsRestorer extends Feature implements OnStart, AfterEachChunk, OnFinish {
 	public function onStart() {

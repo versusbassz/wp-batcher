@@ -1,6 +1,6 @@
 <?php
 
-namespace WpBatcher\Feature;
+namespace Versusbassz\WpBatcher\Feature;
 
 abstract class Feature {
 	/**

@@ -7,7 +7,7 @@ this library tries to help you to write less code and avoid OOM.
 ## How to use
 
 ```php
-use \WpBatcher\CallbackIterator;
+use \Versusbassz\WpBatcher\CallbackIterator;
 
 $iterator = (new CallbackIterator())
 	// Provide a callback that will fetch data you want to iterate over.

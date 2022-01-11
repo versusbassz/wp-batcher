@@ -1,9 +1,9 @@
 <?php
 
-namespace WpBatcher\Feature;
+namespace Versusbassz\WpBatcher\Feature;
 
-use WpBatcher\Events\OnStart;
-use WpBatcher\Events\OnFinish;
+use Versusbassz\WpBatcher\Events\OnStart;
+use Versusbassz\WpBatcher\Events\OnFinish;
 
 class CacheSuspender extends Feature implements OnStart, OnFinish {
 	public function onStart() {

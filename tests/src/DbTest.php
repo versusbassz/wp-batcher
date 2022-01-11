@@ -1,8 +1,8 @@
 <?php
 
-namespace WpBatcher\Tests;
+namespace Versusbassz\WpBatcher\Tests;
 
-use WpBatcher\WpBatcher;
+use Versusbassz\WpBatcher\WpBatcher;
 
 class DbTest extends \WP_UnitTestCase {
 	public function testSimpleWpQueryMemoryConsumption() {

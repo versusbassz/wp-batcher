@@ -4,7 +4,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"WpBatcher\\": "src/"
+			"Versusbassz\\WpBatcher\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"Versusbassz\\WpBatcher\\Tests\\": "tests/src/"
 		}
 	},
 	"require-dev": {

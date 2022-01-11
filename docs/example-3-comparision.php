@@ -6,8 +6,8 @@ exit;
  * Just ideas about a possible interface of the library
  */
 
-use WpBatcher\CallbackIterator;
-use WpBatcher\WpBatcher;
+use Versusbassz\WpBatcher\CallbackIterator;
+use Versusbassz\WpBatcher\WpBatcher;
 
 // ==============================================================================
 // The example of code without using the library

@@ -2,7 +2,7 @@
 
 // time php ./tests/perf/perf-1.php custom|regular
 
-use WpBatcher\CallbackIterator;
+use Versusbassz\WpBatcher\CallbackIterator;
 
 require dirname( __DIR__, 2 ) . '/vendor/autoload.php';
 require dirname( __DIR__, 2 ) . '/tests/helpers.php';

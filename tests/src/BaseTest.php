@@ -1,20 +1,20 @@
 <?php
 
-namespace WpBatcher\Tests;
+namespace Versusbassz\WpBatcher\Tests;
 
 use PHPUnit\Framework\TestCase;
 
-use WpBatcher\WpBatcher;
-use WpBatcher\CallbackIterator;
-use WpBatcher\Feature\CacheCleaner;
-use WpBatcher\Feature\WpActionsRestorer;
-use WpBatcher\Feature\WpdbQueriesLogCleaner;
-use WpBatcher\Feature\WpQueryGcProblemsFixer;
+use Versusbassz\WpBatcher\WpBatcher;
+use Versusbassz\WpBatcher\CallbackIterator;
+use Versusbassz\WpBatcher\Feature\CacheCleaner;
+use Versusbassz\WpBatcher\Feature\WpActionsRestorer;
+use Versusbassz\WpBatcher\Feature\WpdbQueriesLogCleaner;
+use Versusbassz\WpBatcher\Feature\WpQueryGcProblemsFixer;
 
 class BaseTest extends TestCase {
 	public function testCallbackBatcher() {
 		$iterator = (new CallbackIterator())
-			->set_fetcher( 'WpBatcher\\Tests\\paged_range' )
+			->set_fetcher( 'Versusbassz\\WpBatcher\\Tests\\paged_range' )
 			->set_items_per_page( 3 )
 			->set_limit( 10 );
 
@@ -64,7 +64,7 @@ class BaseTest extends TestCase {
 
 	public function testDumpSimple() {
 		$iterator = (new CallbackIterator())
-			->set_fetcher( 'WpBatcher\\Tests\\paged_range' )
+			->set_fetcher( 'Versusbassz\\WpBatcher\\Tests\\paged_range' )
 			->set_items_per_page( 3 )
 			->set_limit( 10 );
 
@@ -90,7 +90,7 @@ class BaseTest extends TestCase {
 	}
 
 	public function testDumpComplex() {
-		$iterator = WpBatcher::callback( 'WpBatcher\\Tests\\paged_range' )
+		$iterator = WpBatcher::callback( 'Versusbassz\\WpBatcher\\Tests\\paged_range' )
 		                     ->set_items_per_page( 3 )
 		                     ->set_limit( 10 );
 
@@ -131,7 +131,7 @@ class BaseTest extends TestCase {
 
 	public function testActionsOnFeatures() {
 		$iterator = (new CallbackIterator())
-			->set_fetcher( 'WpBatcher\\Tests\\paged_range' )
+			->set_fetcher( 'Versusbassz\\WpBatcher\\Tests\\paged_range' )
 			->set_limit( 10 );
 
 		// Empty
