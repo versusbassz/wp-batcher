@@ -2,6 +2,8 @@
 
 namespace WpBatcher\Tests;
 
+const DEBUG = false;
+
 /**
  * dump_method( __METHOD__ );
  *
@@ -40,4 +42,23 @@ function paged_range( $paged, $posts_per_page ) {
  */
 function get_filled_array( $paged, $posts_per_page ) {
 	return array_fill( 0, $posts_per_page, 1 );
+}
+
+function log_value( $message, $value_raw ) {
+	if ( ! DEBUG ) {
+		return;
+	}
+
+	$value = round( $value_raw / ( 1 * 1000 * 1000 ), 3 );
+
+	dump( "{$message} = {$value} MB" );
+}
+
+function log( $message ) {
+	DEBUG && dump( $message );
+}
+
+function get_posts_count() {
+	global $wpdb;
+	return $wpdb->get_var( "SELECT COUNT(ID) FROM {$wpdb->posts}" );
 }
