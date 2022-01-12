@@ -139,6 +139,7 @@ class WpBatcherTest extends WP_UnitTestCase {
 					'compare' => 'NOT EXISTS',
 				],
 			],
+
 			'orderby' => 'ID',
 			'order' => 'ASC',
 			'number' => -1,
@@ -156,10 +157,10 @@ class WpBatcherTest extends WP_UnitTestCase {
 				],
 			],
 
-			'nopaging' => true,
 			'orderby' => 'ID',
 			'order' => 'ASC',
-			'fields' => 'ID',
+			'number' => -1,
+			'fields' => 'ids',
 		] );
 
 		$this->assertCount( $items_qty_expected, $items );
