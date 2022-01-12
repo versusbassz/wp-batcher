@@ -30,6 +30,7 @@ class WpBatcher {
 				$_args = $args;
 
 				$required_args = [
+					'nopaging' => false,
 					'paged' => $paged,
 					'posts_per_page' => $items_per_page,
 				];
