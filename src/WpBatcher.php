@@ -2,6 +2,8 @@
 
 namespace Versusbassz\WpBatcher;
 
+use Exception;
+
 use Versusbassz\WpBatcher\Feature\CacheCleaner;
 use Versusbassz\WpBatcher\Feature\WpActionsRestorer;
 use Versusbassz\WpBatcher\Feature\WpdbQueriesLogCleaner;
@@ -12,6 +14,8 @@ class WpBatcher {
 	 * @param array $args
 	 *
 	 * @return CallbackIterator
+	 * @throws Exception
+	 *
 	 * @see https://developer.wordpress.org/reference/functions/get_posts/
 	 * @see \get_posts()
 	 * @see \WP_Query::parse_query()
@@ -40,6 +44,8 @@ class WpBatcher {
 	 * @param array $args
 	 *
 	 * @return CallbackIterator
+	 * @throws Exception
+	 *
 	 * @see https://developer.wordpress.org/reference/functions/get_users/
 	 * @see \get_users()
 	 * @see \WP_User_Query::prepare_query()
@@ -68,6 +74,8 @@ class WpBatcher {
 	 * @param array $args
 	 *
 	 * @return CallbackIterator
+	 * @throws Exception
+	 *
 	 * @see https://developer.wordpress.org/reference/functions/get_terms/
 	 * @see \get_terms()
 	 * @see \WP_Term_Query::__construct()
@@ -96,6 +104,8 @@ class WpBatcher {
 	 * @param $args
 	 *
 	 * @return CallbackIterator
+	 * @throws Exception
+	 *
 	 * @see https://developer.wordpress.org/reference/functions/get_comments/
 	 * @see \get_comments()
 	 * @see \WP_Comment_Query::__construct()
@@ -120,6 +130,12 @@ class WpBatcher {
 			} );
 	}
 
+	/**
+	 * @param $callable
+	 *
+	 * @return CallbackIterator
+	 * @throws Exception
+	 */
 	public static function callback( $callable ) {
 		return ( new CallbackIterator())
 			->set_fetcher( $callable )
