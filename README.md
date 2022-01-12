@@ -1,63 +1,62 @@
 # WP-Batcher
 
-If you need to do a bulk change over many items in WordPress 
+If you need to change many items of the same type (posts, users, etc.) in WordPress 
 (with possible Out-of-Memory result) 
-this library tries to help you to write less code and avoid OOM.
+this library helps you to write less code and avoid OOM.
 
 ## How to use
+Imagine you have 100000 posts in a database, and you need to iterate over them and change somehow.
+
+The example of code without using the library:
 
 ```php
-use \Versusbassz\WpBatcher\CallbackIterator;
+$paged = 1;
 
-$iterator = (new CallbackIterator())
-	// Provide a callback that will fetch data you want to iterate over.
-	// Pls, pay attention to its signature.
-	->set_fetcher( function ( $paged, $items_per_page ) {
-		$query = new \WP_Query( [
-			'post_type' => [ 'post' ],
-			'post_status' => [ 'publish' ],
-			'paged' => $paged,
-			'posts_per_page' => $items_per_page,
-			'orderby' => 'ID',
-			'order' => 'ASC',
-		] );
+wp_suspend_cache_addition( true );
 
-		return $query->posts;
-	} )
+while ( true ) {
+	$items = get_posts( [
+		'posts_per_page' => 100,
+		'paged' => $paged,
+		'orderby' => 'ID',
+		'order' => 'ASC',
+	] );
 
-	// During iteration instead of fetching N (e.g.: 1000) items for one time
-	// the object will fetch X (e.g.: 100) values Y (e.g.: 10) times.
-	// This setting is about X value.
-	// Default value: 100
-	->set_items_per_page( 50 )
-
-	// If you need to restrict the total quantity of processed items (for some reason).
-	// Default value: 0 (No limit)
-	->set_limit( 1000 )
-
-	// Suspend WP cache addition before a loop
-	// and unsuspend it when the loop has been finished.
-	// It's disabled by default.
-	->use_cache_suspending();
-
-	foreach ( $iterator as $post ) {
-		$value = wp_remote_retrieve_body( wp_remote_get( "https://example.org/api/{$post->ID}/" ) );
-		$update_result = update_post_meta( $post->ID, 'test_field', $value );
+	if ( ! count( $items ) ) {
+		break;
 	}
+
+	foreach ( $items as $item ) {
+		// Payload
+	}
+
+	++$paged;
+}
+
+wp_suspend_cache_addition( false );
 ```
 
-To dump the internal state of an iterator object:
+With using the library the code above turns into to:
+
+```php
+use \Versusbassz\WpBatcher\WpBatcher;
+
+$iterator = WpBatcher::get_posts();
+
+foreach ( $items as $item ) {
+	// Payload
+}
 ```
-$iterator->dump();
-// returns an array of "prop name" => "prop value"
-```
+
+## Documentation
+See [Wiki](https://github.com/versusbassz/wp-batcher/wiki)
 
 ## Compatibility
 - PHP >= 5.6 (the target version is a version [required by WordPress](https://wordpress.org/about/requirements/))
+- WordPress 5.7+
 
-## For development
-1. `make build-dev`
-2. `make run`
-3. To run tests:
-    - `make test-in-docker`
-    - OR `make shell` and inside the container `make test`
+## Versioning and stability
+The project follows https://semver.org/
+
+## License
+The license of the project is GPL v2 (or later)
