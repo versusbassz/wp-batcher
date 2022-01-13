@@ -278,8 +278,13 @@ abstract class BaseIterator implements Iterator {
 	 * @param Feature $feature
 	 *
 	 * @return self
+	 * @throws Exception
 	 */
 	public function add_feature( Feature $feature ) {
+		if ( $this->changes_locked ) {
+			throw new Exception( 'The object can\'t be changed after first iteration' );
+		}
+
 		$feature_name = $feature->get_name();
 
 		if ( isset( $this->features[ $feature_name ] ) ) {
@@ -316,8 +321,13 @@ abstract class BaseIterator implements Iterator {
 	 * @param string $feature_name
 	 *
 	 * @return self
+	 * @throws Exception
 	 */
 	public function remove_feature( $feature_name ) {
+		if ( $this->changes_locked ) {
+			throw new Exception( 'The object can\'t be changed after first iteration' );
+		}
+
 		if ( ! isset( $this->features[ $feature_name ] ) ) {
 			return $this;
 		}
@@ -337,6 +347,7 @@ abstract class BaseIterator implements Iterator {
 
 	/**
 	 * @return self
+	 * @throws Exception
 	 */
 	public function use_cache_suspending() {
 		$this->remove_feature( CacheCleaner::class );
@@ -347,6 +358,7 @@ abstract class BaseIterator implements Iterator {
 
 	/**
 	 * @return self
+	 * @throws Exception
 	 */
 	public function use_cache_clearing() {
 		$this->remove_feature( CacheSuspender::class );
