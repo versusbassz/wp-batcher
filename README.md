@@ -4,7 +4,7 @@ If you need to change many items of the same type (posts, users, etc.) in WordPr
 (with possible Out-of-Memory result) 
 this library helps you to write less code and avoid OOM.
 
-## Installation (move to README.md)
+## Installation
 ```shell
 composer require versusbassz/wp-batcher 0.1.*
 ```
