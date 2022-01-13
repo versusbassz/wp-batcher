@@ -7,6 +7,11 @@ this library helps you to write less code and avoid OOM.
 ## How to use
 Imagine you have 100000 posts in a database, and you need to iterate over them and change somehow.
 
+Of course, you can't just use `get_posts( [ 'nopaging' => true ] )`, 
+because you'll get `Fatal error: memory limit has been exceeded bla bla bla... `.  
+
+So to do the job you need to handle you posts consequentially chunk by chunk (e.g. 100 posts at a time).
+
 The example of code without using the library:
 
 ```php
@@ -43,10 +48,11 @@ use \Versusbassz\WpBatcher\WpBatcher;
 
 $iterator = WpBatcher::get_posts();
 
-foreach ( $items as $item ) {
+foreach ( $iterator as $item ) {
 	// Payload
 }
 ```
+And the library does more than just `wp_suspend_cache_addition()` under the hood.
 
 ## Documentation
 See [Wiki](https://github.com/versusbassz/wp-batcher/wiki)
