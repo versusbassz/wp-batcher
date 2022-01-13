@@ -1,4 +1,16 @@
 {
+	"name": "versusbassz/wp-batcher",
+	"description": "Iterate over thousands of posts/users/etc. in WordPress without getting OOM and writing boilerplate code",
+	"type": "library",
+	"keywords": ["wordpress","iterator"],
+	"homepage": "https://github.com/versusbassz/wp-batcher",
+	"authors": [
+		{
+			"name": "Vladimir Sklyar",
+			"email": "versus.post@gmail.com",
+			"homepage": "https://versusbassz.com/"
+		}
+	],
 	"license": "GPL-2.0-or-later",
 	"require": {
 		"php": ">= 5.6"
