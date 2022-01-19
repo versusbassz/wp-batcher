@@ -4,7 +4,6 @@ services:
 
   wordpress:
     image: wordpress
-    restart: always
     ports:
       - "8080:80"
     volumes:
@@ -22,7 +21,6 @@ services:
 
   db:
     image: mysql:5.7
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: 123456
 
