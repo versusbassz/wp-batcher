@@ -12,16 +12,16 @@ up:
 	# docker run --name wp-collections -p 8080:80 -d --rm wordpress
 
 start:
-	docker-composer start
+	docker-compose start
 
 stop:
-	docker-composer stop
+	docker-compose stop
 
 prune:
 	docker-compose down -v
 
 shell:
-	docker-compose exec wordpress /bin/bash
+	docker-compose exec -w /var/www/html/ wordpress /bin/bash
 
 # Tests
 test:
