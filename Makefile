@@ -7,9 +7,18 @@ build-dev:
 	make download-wp-tests-lib
 
 # Dev-env
-run:
-	docker-compose up
+up:
+	docker-compose up -d
 	# docker run --name wp-collections -p 8080:80 -d --rm wordpress
+
+start:
+	docker-composer start
+
+stop:
+	docker-composer stop
+
+prune:
+	docker-compose down -v
 
 shell:
 	docker-compose exec wordpress /bin/bash
