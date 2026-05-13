@@ -8,27 +8,27 @@ build-dev:
 
 # Dev-env
 up:
-	docker-compose up -d
+	docker compose up -d
 	# docker run --name wp-collections -p 8080:80 -d --rm wordpress
 
 start:
-	docker-compose start
+	docker compose start
 
 stop:
-	docker-compose stop
+	docker compose stop
 
 prune:
-	docker-compose down -v
+	docker compose down -v
 
 shell:
-	docker-compose exec -w /var/www/html/ wordpress /bin/bash
+	docker compose exec -w /var/www/html/ wordpress /bin/bash
 
 # Tests
 test:
 	./vendor/bin/phpunit
 
 test-in-docker:
-	docker-compose exec -w /var/www/html/ wordpress make test
+	docker compose exec -w /var/www/html/ wordpress make test
 
 download-wp-tests-lib:
 	mkdir -p ./custom
