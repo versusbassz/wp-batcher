@@ -1,7 +1,4 @@
-version: "3.9"
-
 services:
-
   wordpress:
     image: wordpress
     ports:
