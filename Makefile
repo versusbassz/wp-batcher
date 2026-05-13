@@ -33,11 +33,15 @@ test-in-docker:
 download-wp-tests-lib:
 	mkdir -p ./custom
 	rm -rf ./custom/wp-tests-lib
-	svn co https://develop.svn.wordpress.org/tags/5.8.2/tests/phpunit/includes ./custom/wp-tests-lib/includes
-	svn co https://develop.svn.wordpress.org/tags/5.8.2/tests/phpunit/data     ./custom/wp-tests-lib/data
-	svn co https://develop.svn.wordpress.org/tags/5.8.2/tests/phpunit/tests    ./custom/wp-tests-lib/tests
+	rm -rf ./custom/wp-tests-lib-tmp
+	git clone --depth 1 --branch 6.9.4 https://github.com/WordPress/wordpress-develop.git ./custom/wp-tests-lib-tmp/
+	mkdir -p ./custom/wp-tests-lib
+	mv ./custom/wp-tests-lib-tmp/tests/phpunit/data     ./custom/wp-tests-lib/data
+	mv ./custom/wp-tests-lib-tmp/tests/phpunit/includes ./custom/wp-tests-lib/includes
+	mv ./custom/wp-tests-lib-tmp/tests/phpunit/tests    ./custom/wp-tests-lib/tests
+	rm -rf ./custom/wp-tests-lib-tmp
 
 download-wp-core:
 	mkdir -p ./custom
 	rm -rf ./custom/wp-core
-	git clone https://github.com/johnpbloch/wordpress-core.git ./custom/wp-core/ --branch 5.8.2 --single-branch
+	git clone --depth 1 --branch 6.9.4 https://github.com/johnpbloch/wordpress-core.git ./custom/wp-core/

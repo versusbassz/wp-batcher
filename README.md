@@ -63,8 +63,8 @@ And the library does more than just `wp_suspend_cache_addition()` under the hood
 See [Wiki](https://github.com/versusbassz/wp-batcher/wiki)
 
 ## Compatibility
-- PHP >= 5.6 (the target version is a version [required by WordPress](https://wordpress.org/about/requirements/))
-- WordPress 5.7+
+- PHP >= 8.2 (the target version is a version [required by WordPress](https://wordpress.org/about/requirements/))
+- WordPress 6.8+
 
 ## Versioning and stability
 The project follows https://semver.org/

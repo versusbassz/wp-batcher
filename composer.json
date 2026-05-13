@@ -2,7 +2,10 @@
 	"name": "versusbassz/wp-batcher",
 	"description": "Iterate over thousands of posts/users/etc. in WordPress without getting OOM and writing boilerplate code",
 	"type": "library",
-	"keywords": ["wordpress","iterator"],
+	"keywords": [
+		"wordpress",
+		"iterator"
+	],
 	"homepage": "https://github.com/versusbassz/wp-batcher",
 	"authors": [
 		{
@@ -13,7 +16,7 @@
 	],
 	"license": "GPL-2.0-or-later",
 	"require": {
-		"php": ">=5.6"
+		"php": ">=8.2"
 	},
 	"autoload": {
 		"psr-4": {
@@ -26,8 +29,13 @@
 		}
 	},
 	"require-dev": {
-		"phpunit/phpunit": "^7",
-		"symfony/var-dumper": "^5.3",
-		"yoast/phpunit-polyfills": "^1.0"
+		"phpunit/phpunit": "^9",
+		"symfony/var-dumper": "^7.4",
+		"yoast/phpunit-polyfills": "^1.1.5"
+	},
+	"config": {
+		"platform": {
+			"php": "8.2.31"
+		}
 	}
 }
