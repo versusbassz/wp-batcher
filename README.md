@@ -6,7 +6,7 @@ this library helps you to write less code and avoid OOM.
 
 ## Installation
 ```shell
-composer require versusbassz/wp-batcher 0.1.*
+composer require versusbassz/wp-batcher 0.2.*
 ```
 
 ## How to use
