@@ -17,7 +17,7 @@ services:
       WORDPRESS_DB_PASSWORD: examplepass
 
   db:
-    image: mysql:5.7
+    image: mysql:5.7.44
     environment:
       MYSQL_ROOT_PASSWORD: 123456
 
