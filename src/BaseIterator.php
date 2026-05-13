@@ -107,7 +107,7 @@ abstract class BaseIterator implements Iterator {
 	 *
 	 * @return array
 	 */
-	public function dump() {
+	public function dump() : array {
 		$get_name = function ( Feature $item ) {
 			return $item->get_name();
 		};
@@ -137,7 +137,7 @@ abstract class BaseIterator implements Iterator {
 	 * @return void
 	 * @throws Exception
 	 */
-	public function rewind() {
+	public function rewind() : void {
 		if ( $this->changes_locked ) {
 			throw new Exception( 'Changes were locked before. Note: this object can be used only as a generator, no rewind functionality after 1st foreach iteration' );
 		}
@@ -153,7 +153,7 @@ abstract class BaseIterator implements Iterator {
 	 * @return void
 	 * @throws Exception
 	 */
-	public function next() {
+	public function next() : void {
 		// handle N-th or 1st iteration
 		if ( $this->loop_started ) {
 			++$this->chunk_position;
@@ -192,11 +192,11 @@ abstract class BaseIterator implements Iterator {
 		}
 	}
 
-	public function valid() {
+	public function valid() : bool {
 		return ! $this->loop_finished;
 	}
 
-	public function current() {
+	public function current() : mixed {
 		if ( $this->loop_finished ) {
 			return null;
 		}
@@ -204,7 +204,7 @@ abstract class BaseIterator implements Iterator {
 		return $this->chunk[ $this->chunk_position ];
 	}
 
-	public function key() {
+	public function key() : int {
 		return $this->total_position;
 	}
 
@@ -212,7 +212,7 @@ abstract class BaseIterator implements Iterator {
 	 * @return array
 	 * @throws Exception
 	 */
-	protected function fetch_chunk() {
+	protected function fetch_chunk() : mixed {
 		if ( ! is_callable( $this->fetcher ) ) {
 			throw new Exception( 'Fetched is not provided' );
 		}
@@ -226,7 +226,7 @@ abstract class BaseIterator implements Iterator {
 	 * @return self
 	 * @throws Exception
 	 */
-	public function set_items_per_page( $number ) {
+	public function set_items_per_page( $number ) : BaseIterator {
 		if ( $this->changes_locked ) {
 			throw new Exception( 'The object can\'t be changed after first iteration' );
 		}
@@ -241,7 +241,7 @@ abstract class BaseIterator implements Iterator {
 	 * @return self
 	 * @throws Exception
 	 */
-	public function set_limit( $number ) {
+	public function set_limit( $number ) : BaseIterator {
 		if ( $this->changes_locked ) {
 			throw new Exception( 'The object can\'t be changed after first iteration' );
 		}
@@ -253,18 +253,18 @@ abstract class BaseIterator implements Iterator {
 	/**
 	 * @return bool
 	 */
-	protected function has_limit() {
+	protected function has_limit() : bool {
 		return (bool) $this->limit;
 	}
 
 	/**
 	 * @return bool
 	 */
-	protected function limit_exceeded() {
+	protected function limit_exceeded() : bool {
 		return $this->has_limit() && $this->total_position >= $this->limit;
 	}
 
-	protected function do_event( $event_name ) {
+	protected function do_event( $event_name ) : void {
 		if ( ! isset( $this->handlers[ $event_name ] ) || ! count( $this->handlers[ $event_name ] ) ) {
 			return;
 		}
@@ -280,7 +280,7 @@ abstract class BaseIterator implements Iterator {
 	 * @return self
 	 * @throws Exception
 	 */
-	public function add_feature( Feature $feature ) {
+	public function add_feature( Feature $feature ) : BaseIterator {
 		if ( $this->changes_locked ) {
 			throw new Exception( 'The object can\'t be changed after first iteration' );
 		}
@@ -323,7 +323,7 @@ abstract class BaseIterator implements Iterator {
 	 * @return self
 	 * @throws Exception
 	 */
-	public function remove_feature( $feature_name ) {
+	public function remove_feature( $feature_name ) : BaseIterator {
 		if ( $this->changes_locked ) {
 			throw new Exception( 'The object can\'t be changed after first iteration' );
 		}
@@ -349,7 +349,7 @@ abstract class BaseIterator implements Iterator {
 	 * @return self
 	 * @throws Exception
 	 */
-	public function use_cache_suspending() {
+	public function use_cache_suspending() : BaseIterator {
 		$this->remove_feature( CacheCleaner::class );
 		$this->add_feature( new CacheSuspender() );
 
@@ -360,14 +360,14 @@ abstract class BaseIterator implements Iterator {
 	 * @return self
 	 * @throws Exception
 	 */
-	public function use_cache_clearing() {
+	public function use_cache_clearing() : BaseIterator {
 		$this->remove_feature( CacheSuspender::class );
 		$this->add_feature( new CacheCleaner() );
 
 		return $this;
 	}
 
-	protected static function get_events_info() {
+	protected static function get_events_info() : array {
 		return [
 			[ 'interface' => OnStart::class, 'method' => 'onStart', ],
 			[ 'interface' => OnFinish::class, 'method' => 'onFinish', ],
